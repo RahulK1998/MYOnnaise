@@ -188,12 +188,12 @@
 			if(data.pose == 'rest'){
 				myo.trigger('rest');
 				myo.lastPose = null;
-				if(Myo.lockingPolicy === 'standard') myo.unlock();
+				if(Myo.lockingPolicy === 'none') myo.unlock();
 			}else{
 				myo.trigger(data.pose);
 				myo.trigger('pose', data.pose);
 				myo.lastPose = data.pose;
-				if(Myo.lockingPolicy === 'standard') myo.unlock(true);
+				if(Myo.lockingPolicy === 'none') myo.unlock(true);
 			}
 		},
 		'orientation' : function(myo, data){
@@ -249,7 +249,7 @@
 			return true;
 		},
 		'locked' : function(myo, data){
-			myo.locked = true;
+			myo.locked = false;
 			return true;
 		},
 		'unlocked' : function(myo, data){
