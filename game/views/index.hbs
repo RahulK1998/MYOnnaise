@@ -35,6 +35,9 @@ var bullets1 = [];
 var bullets2 = [];
 var HP1 = new text(50, 50, "black", 1);
 var HP2 = new text(1350, 50, "black", 2);
+var smash_music = new Audio('sounds/smash.mp3');
+var jump_music = new Audio('sounds/jetpack.mp3');
+var laser_music = new Audio('sounds/laser.mp3');
 
 function startGame() {
 	char1 = new Player(100, 460, charsprites, 1, 1);
@@ -200,6 +203,7 @@ function Player(x, y, img, dir, num){
 
 	this.jump = function(jumping){
 		if(!this.jumping && this.grounded){
+			jump_music.play();
 			this.jumping = true;
 			this.grounded = false;
 			this.speedY = -25;
@@ -208,7 +212,7 @@ function Player(x, y, img, dir, num){
 	}
 
 	this.makeBullet = function(){
-
+		laser_music.play();
 		if(this.dir == 1){
 			var b = new Bullet(this.x+120, this.y+80, this.dir, this.num);
 		}
@@ -231,7 +235,7 @@ function Player(x, y, img, dir, num){
 	this.smashRadius = function(){
 		ctx = myGameArea.context;
 		ctx.drawImage(impactimg, 0,0, 483,64, this.x-30,this.y+130,180,30);
-
+		smash_music.play();
 		if(this.num == 1){
 			if((char2.x < this.x + 50 && char2.x > this.x - 50) && (char2.y < this.y + 50 && char2.y > this.y -50)){
 				char2.health -= 15;
