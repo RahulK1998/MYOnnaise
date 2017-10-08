@@ -24,19 +24,12 @@ Myo.on('connected', function(){
 
 var char1;
 var char2;
-var charsprites = new Image();
-charsprites.src = '/images/sprites.png';
-var impactimg = new Image();
-impactimg.src = '/images/impact.png';
 var bullets1 = [];
 var bullets2 = [];
-var HP1 = new text(50, 50, "black", 1);
-var HP2 = new text(1550, 50, "black", 2);
 
 function startGame() {
-	char1 = new Player(100, 460, charsprites, 1, 1);
-	char2 = new Player(850, 460, charsprites, -1, 2);
-
+	char1 = new Player(100, 600, "red", 1, 1);
+	char2 = new Player(1650, 600, "blue", -1, 2);
     myGameArea.start();
 }
 
@@ -62,7 +55,7 @@ function Bullet(x,y,dir, firer){
 	this.dir = dir;
 	this.firer = firer;
 
-	this.xspeed = this.dir*15;
+	this.xspeed = this.dir*12;
 
 	this.update = function(){
 		this.x += this.xspeed;
@@ -70,28 +63,21 @@ function Bullet(x,y,dir, firer){
 		if(this.result){
 			ctx = myGameArea.context;
 			ctx.fillStyle = "yellow";
-			ctx.fillRect(this.x, this.y, 20, 20);
+			ctx.fillRect(this.x, this.y, 5, 5);
 		}
 		else{
-
 			if(this.firer == 1){
-				
 				bullets1.pop();
-				char2.health -= 10;
 			}
-			else{
-				
+			else(this.firer == 2){
 				bullets2.pop();
-				char1.health -= 10;
 			}
-			
-		}
-		
+		}	
 	}
 
 	this.checkCollision = function(){
 		
-		if((this.x >= char1.x && this.x <= char1.x+120 && this.y >= char1.y && this.y <= char1.y+160) || (this.x >= char2.x && this.x <= char2.x+120 && this.y >= char2.y && this.y <= char2.y+160)){
+		if((this.x >= char1.x && this.x <= char1.x+30 && this.y >= char1.y && this.y <= char1.y+30) || (this.x >= char2.x && this.x <= char2.x+30 && this.y >= char2.y && this.y <= char2.y+30)){
 			return 0;
 		}
 		else{
@@ -101,11 +87,11 @@ function Bullet(x,y,dir, firer){
 }
 
  
-function Player(x, y, img, dir, num){
+function Player(x, y, color, dir, num){
 	this.x = x;
 	this.y = y;
 	this.health = 100;
-	this.img = img;
+	this.color = color;
 	this.speedX = 0;
 	this.speedY = 0.5;
 	this.jumping = false;
@@ -114,7 +100,7 @@ function Player(x, y, img, dir, num){
 	this.friction = 1;
 	this.dir = dir;
 	this.num = num;
-	this.smash = false;
+	
 
 	this.update = function(){
 		
@@ -133,15 +119,8 @@ function Player(x, y, img, dir, num){
 		//console.log(this.x);
 		this.detectCollision();
 		ctx = myGameArea.context;
-		
-		if(this.speedX){
-			ctx.drawImage(this.img, 600+this.dir*300,800-this.num*400, 300, 400, this.x, this.y, 120,160);
-		}
-		else{
-			ctx.drawImage(this.img, 300+this.dir*300,800-this.num*400, 300, 400, this.x, this.y, 120,160);
-		}
-		
-		//ctx.fillRect(this.x, this.y, 30, 30);
+		ctx.fillStyle = this.color;
+		ctx.fillRect(this.x, this.y, 30, 30);
 	}
 
 	this.move = function(dirx){
@@ -149,38 +128,23 @@ function Player(x, y, img, dir, num){
 	}
 
 	this.detectCollision = function(){
-		if(this.y > 40 && this.y < 90 && this.x >= 420 && this.x <= 1150 && this.speedY >= 0){
-			this.y = 40;
+		if(this.y > 170 && this.y < 210 && this.x >= 500 && this.x <= 1200 && this.speedY >= 0){
+			this.y = 170;
 			this.speedY = 0;
 			this.grounded = true;
 			this.jumping = false;
-			if(this.smash){
-				this.smash = false;
-				this.smashRadius();
-				
-			}
 		}
-		else if(this.y > 220 && this.y < 270 && ((this.x < 500 && this.x >= 0) || (this.x > 1120 && this.x <= 1700)) && this.speedY >= 0){
-			this.y = 220;
+		else if(this.y > 350 && this.y < 400 && ((this.x < 600 && this.x >= 0) || (this.x > 1150 && this.x <= 1700)) && this.speedY >= 0){
+			this.y = 350;
 			this.speedY = 0;
 			this.grounded = true;
 			this.jumping = false;
-			if(this.smash){
-				this.smash = false;
-				this.smashRadius();
-				
-			}
 		}
-		else if(this.y > 460){
-			this.y = 460;
+		else if(this.y > 600){
+			this.y = 600;
 			this.speedY = 0;
 			this.grounded = true;
 			this.jumping = false;
-			if(this.smash){
-				this.smash = false;
-				this.smashRadius();
-				
-			}
 		}
 		else if(this.x < 0){
 			this.x = 0;
@@ -204,60 +168,18 @@ function Player(x, y, img, dir, num){
 	}
 
 	this.makeBullet = function(){
-
 		if(this.dir == 1){
-			var b = new Bullet(this.x+120, this.y+80, this.dir, this.num);
+			var b = new Bullet(this.x+30, this.y+12, this.dir);
 		}
 		else{
-
-			var b = new Bullet(this.x, this.y+80, this.dir, this.num);
+			var b = new Bullet(this.x, this.y+12, this.dir);
 		}
 		if(this.num == 1){
 			bullets1.push(b);
-			
 		}
 		else{
 			bullets2.push(b);
-			
-
 		}
-		
-	}
-
-	this.smashRadius = function(){
-		ctx = myGameArea.context;
-		ctx.drawImage(impactimg, 0,0, 483,64, this.x-30,this.y+130,180,30);
-
-		if(this.num == 1){
-			if((char2.x < this.x + 50 || char2.x < this.x - 50) && (char2.y < this.y + 50 || char2.y < this.y -50)){
-				char2.health -= 15;
-			}
-		}
-		else{
-			if((char1.x < this.x + 50 || char1.x < this.x - 50) && (char1.y < this.y + 50 || char1.y < this.y -50)){
-				char1.health -= 15;
-			}
-		}
-	}
-}
-
-function text(x, y, color, num){
-	this.x = x;
-	this.y = y;
-	this.color = color;
-	this.num = num;
-
-	this.update = function(){
-		ctx = myGameArea.context;
-		if(this.num == 1){
-			this.text = "Player 1: "+char1.health;
-		}
-		else{
-			this.text = "Player 2: "+char2.health;
-		}
-		ctx.fillStyle = this.color;
-		ctx.font = "35px Garamond";
-		ctx.fillText(this.text, this.x, this.y);
 	}
 }
 function component(width, height, color, x, y, type) {
@@ -314,34 +236,32 @@ function component(width, height, color, x, y, type) {
 
 function updateGameArea() { 
     myGameArea.clear();
+    char1.update();
+    char2.update();
 
-    if(char1.health > 0 && char2.health > 0){
-    	char1.update();
-    	char2.update();
-    }
-    
-	if(bullets2.length){
-		
-    	for(var j = 0; j < bullets2.length; j++){
-    		
-    		bullets2[j].update();
-    	}
-    }
     if(bullets1.length){
-    	
     	for(var i = 0; i < bullets1.length; i++){
     		bullets1[i].update();
     	}
     }
 
-    HP1.update();
-    HP2.update();
-
-    
-
+    if(bullets2.length){
+    	for(var j = 0; j < bullets2.length; j++){
+    		bullets2[j].update();
+    	}
+    }
 }
 
-/*window.addEventListener("keydown", function(event){
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+
+function accelerate(n) {
+    myGamePiece.gravity = n;
+}
+
+window.addEventListener("keydown", function(event){
 	if(event.keyCode == 39){
 		char1.move(1);
 		char1.dir = 1;
@@ -363,21 +283,18 @@ window.addEventListener("keyup", function(event){
 		char1.speedY = 0;
 	}
 
-});*/
+});
 
 
 
-Myo.on('wave_out', function(){
+/*Myo.on('wave_out', function(){
 	Myo.setLockingPolicy('none');
 	if(this.name == 'My Myo'){
 		//this.vibrate();
 		char1.move(1);
-		char1.dir =1;
 	}
 	else{
-
 		char2.move(1);
-		char2.dir = 1;
 	}
 });
 
@@ -386,11 +303,9 @@ Myo.on('wave_in', function(){
 	if(this.name == 'My Myo'){
 		//this.vibrate();
 		char1.move(-1);
-		char1.dir = -1;
 	}
 	else{
 		char2.move(-1);
-		char2.dir = -1;
 	}
 });
 
@@ -402,31 +317,6 @@ Myo.on('fist', function(){
 	}
 	else{
 		char2.makeBullet();
-
-	}
-});
-
-Myo.on('fingers_spread', function(){
-	Myo.setLockingPolicy('none');
-	if(this.name == 'My Myo'){
-		//this.vibrate();
-		char1.makeBullet();
-	}
-	else{
-		char2.makeBullet();
-
-	}
-});
-
-Myo.on('double_tap', function(){
-	Myo.setLockingPolicy('none');
-	if(this.name == 'My Myo'){
-		//this.vibrate();
-		char1.makeBullet();
-	}
-	else{
-		char2.makeBullet();
-
 	}
 });
 
@@ -439,7 +329,7 @@ Myo.on('rest', function(){
 	else{
 		char2.move(0);
 	}
-});
+});*/
 </script>
 
 </body>
