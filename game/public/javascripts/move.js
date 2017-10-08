@@ -1,5 +1,5 @@
 Myo.connect('com.stolksdorf.myAwesomeApp');
-console.log("Yolo");
+
 Myo.on('connected', function(){
   Myo.setLockingPolicy('none');
 
@@ -12,7 +12,7 @@ Myo.on('fist', function(){
 		this.vibrate();
 	}
 	
-	if(this.name == "Band 2"){
+	if(this.name == "Evan 2"){
 		console.log('Fist 2!');
 		this.vibrate();
 	}
@@ -23,14 +23,18 @@ Myo.on('wave_in', function(){
 	if(this.name == "My Myo"){
 		console.log('Wave In 1!');
 		this.vibrate();
+
 	}
 	
-	if(this.name == "Band 2"){
+	if(this.name == "Evan 2"){
 		console.log('Wave In 2!');
-		this.vibrate();
+		//this.vibrate();
+		accelerate(-0.2);
+		setTimeout(function(){ accelerate(0.05); }, 400);
 	}
 	
 });
+
 
 Myo.on('wave_out', function(){
 	Myo.setLockingPolicy('none');
@@ -39,7 +43,7 @@ Myo.on('wave_out', function(){
 		this.vibrate();
 	}
 	
-	if(this.name == "Band 2"){
+	if(this.name == "Evan 2"){
 		console.log('Wave Out 2!');
 		this.vibrate();
 	}
@@ -52,7 +56,7 @@ Myo.on('fingers_spread', function(){
 		this.vibrate();
 	}
 	
-	if(this.name == "Band 2"){
+	if(this.name == "Evan 2"){
 		console.log('Fingers Spread 2!');
 		this.vibrate();
 	}
@@ -65,7 +69,7 @@ Myo.on('double_tap', function(){
 		this.vibrate();
 	}
 	
-	if(this.name == "Band 2"){
+	if(this.name == "Evan 2"){
 		console.log('Double Tap 2!');
 		this.vibrate();
 	}

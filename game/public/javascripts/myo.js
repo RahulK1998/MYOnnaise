@@ -11,7 +11,7 @@
 			socket_url  : "ws://127.0.0.1:10138/myo/",
 			app_id      : 'com.myojs.default'
 		},
-		lockingPolicy : 'standard',
+		lockingPolicy : 'none',
 		events : [],
 		myos : [],
 
@@ -212,6 +212,25 @@
 					z : data.gyroscope[2]
 				}
 			};
+			var up_nice_name = 0;
+			up_nice_name -= imu_data.gyroscope.y;
+			//console.log(myo.name);
+			if(up_nice_name > 75){
+				console.log("DOWN");
+				console.log(char1.x);
+			}
+			else if(up_nice_name < -75){
+				if(myo.name == 'My Myo'){
+					console.log("UP_inside");
+					//this.vibrate();
+					char1.jump(char1.jumping);
+				}
+				else if(myo.name == 'My Myo 2'){
+					char2.jump(char2.jumping);
+				}
+				console.log("UP");
+
+			}
 			if(!myo.lastIMU) myo.lastIMU = imu_data;
 			myo.trigger('orientation',   imu_data.orientation, data.timestamp);
 			myo.trigger('accelerometer', imu_data.accelerometer, data.timestamp);

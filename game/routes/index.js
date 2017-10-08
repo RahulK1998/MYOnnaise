@@ -12,7 +12,7 @@ Myo.connect('com.stolksdorf.myAwesomeApp', require('ws'));
 
 Myo.on('connected', function(){
   console.log('connected!', this.name);
-  Myo.setLockingPolicy('none');
+  //Myo.setLockingPolicy('none');
   //console.log(Myo.myos[0].name);
 });
 
