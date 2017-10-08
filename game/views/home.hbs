@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-image: url("/images/startbg.jpg");
+    /*background-color: #3e3e3e;*/
+}
+</style>
+</head>
+<body onload="start()">
+<script>
+Myo.connect('com.stolksdorf.myAwesomeApp');
+
+Myo.on('connected', function(){
+  Myo.setLockingPolicy('none');
+
+});
+
+var options = ["START", "Practice / Controls", "Leaderboards"];
+var selected = 0;
+
+function start(){
+	MenuScr.start();
+}
+
+var MenuScr = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 1750;
+        this.canvas.height = 800;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.interval = setInterval(update, 20);
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+Myo.on('wave_out', function(){
+	selected++;
+	if(selected > 2){
+		selected -= 3;
+	}
+});
+
+Myo.on('wave_in', function(){
+	selected--;
+	if(selected < 0){
+		selected += 3;
+	}
+
+});
+
+
+Myo.on('fist', function(){
+	
+
+	if(selected == 0){
+		window.location.replace('/myonnaise');
+	}
+	if(selected == 1){
+		window.location.replace('/practice');
+	}
+	
+});
+
+function update(){
+	MenuScr.clear();
+	ctx = MenuScr.context;
+	ctx.fillStyle = "black";
+	ctx.font = "50px Garamond";
+	ctx.fillText(options[0], 800, 400);
+
+	ctx.fillText(options[1], 710, 500);
+
+	ctx.fillText(options[2], 755, 600);
+
+	ctx.fillStyle = 'rgba(255,0,0,0.2)';
+
+	if(selected == 0){
+		ctx.fillRect(580, 325, 600, 100);
+	}
+	else if(selected ==1){
+		ctx.fillRect(580, 425, 600, 100);
+	}
+	else{
+		ctx.fillRect(580,525, 600, 100);
+	}
+	
+}
+
+
+
+</script>
+
+</body>
+</html>

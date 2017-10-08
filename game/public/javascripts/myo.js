@@ -218,18 +218,18 @@
 			up_nice_name -= imu_data.gyroscope.y;
 			//console.log(myo.name);
 			if(up_nice_name > 75){
-				console.log("DOWN");
+				//console.log("DOWN");
 				//console.log(char1.x);
 				if(myo.name == 'My Myo'){
-					console.log(char1.smash, char1.grounded);
+					
 					if(!char1.smash && !char1.grounded){
 						char1.speedY = 20;
 						char1.smash = true;
 					}
 				}
-				else if(myo.name =='My Myo 2'){
+				else /*if(myo.name =='My Myo 2')*/{
 					if(!char2.smash && !char2.grounded){
-						char2.speedX = 10;
+						char2.speedY = 20;
 						char2.smash = true;
 					}
 				}
@@ -240,7 +240,7 @@
 					//this.vibrate();
 					char1.jump(char1.jumping);
 				}
-				else if(myo.name == 'My Myo 2'){
+				else /*if(myo.name == 'My Myo 2')*/{
 					char2.jump(char2.jumping);
 				}
 				

@@ -11,8 +11,10 @@ canvas {
     /*background-color: #3e3e3e;*/
 }
 </style>
+
 </head>
 <body onload="startGame()">
+
 <script>
 Myo.connect('com.stolksdorf.myAwesomeApp');
 
@@ -21,7 +23,8 @@ Myo.on('connected', function(){
 
 });
 
-
+var time = 0;
+var gameover = false;
 var char1;
 var char2;
 var charsprites = new Image();
@@ -31,11 +34,11 @@ impactimg.src = '/images/impact.png';
 var bullets1 = [];
 var bullets2 = [];
 var HP1 = new text(50, 50, "black", 1);
-var HP2 = new text(1550, 50, "black", 2);
+var HP2 = new text(1350, 50, "black", 2);
 
 function startGame() {
 	char1 = new Player(100, 460, charsprites, 1, 1);
-	char2 = new Player(850, 460, charsprites, -1, 2);
+	char2 = new Player(1650, 460, charsprites, -1, 2);
 
     myGameArea.start();
 }
@@ -50,6 +53,7 @@ var myGameArea = {
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNo = 0;
         this.interval = setInterval(updateGameArea, 20);
+
         },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -229,12 +233,13 @@ function Player(x, y, img, dir, num){
 		ctx.drawImage(impactimg, 0,0, 483,64, this.x-30,this.y+130,180,30);
 
 		if(this.num == 1){
-			if((char2.x < this.x + 50 || char2.x < this.x - 50) && (char2.y < this.y + 50 || char2.y < this.y -50)){
+			if((char2.x < this.x + 50 && char2.x > this.x - 50) && (char2.y < this.y + 50 && char2.y > this.y -50)){
 				char2.health -= 15;
 			}
 		}
 		else{
-			if((char1.x < this.x + 50 || char1.x < this.x - 50) && (char1.y < this.y + 50 || char1.y < this.y -50)){
+			//console.log(char1.x, this.x)
+			if((char1.x < this.x + 50 && char1.x > this.x - 50) && (char1.y < this.y + 50 && char1.y > this.y -50)){
 				char1.health -= 15;
 			}
 		}
@@ -250,94 +255,76 @@ function text(x, y, color, num){
 	this.update = function(){
 		ctx = myGameArea.context;
 		if(this.num == 1){
-			this.text = "Player 1: "+char1.health;
+			this.text = "Player 1: ";
+			ctx.fillStyle = "green";
+			if(char1.health){
+				ctx.fillRect(this.x+120, this.y-21, 250-2.5*(100-char1.health), 25);
+			}
 		}
 		else{
-			this.text = "Player 2: "+char2.health;
+			ctx.fillStyle='green';
+			this.text = "Player 2: ";
+			if(char2.health){
+				ctx.fillRect(this.x+120, this.y-21, 250-2.5*(100-char2.health), 25);
+			}
 		}
 		ctx.fillStyle = this.color;
 		ctx.font = "35px Garamond";
 		ctx.fillText(this.text, this.x, this.y);
 	}
 }
-function component(width, height, color, x, y, type) {
-    this.type = type;
-    this.score = 0;
-    this.width = width;
-    this.height = height;
-    this.speedX = 0;
-    this.speedY = 0;    
-    this.x = x;
-    this.y = y;
-    this.gravity = 0;
-    this.gravitySpeed = 0;
-    this.update = function() {
-        ctx = myGameArea.context;
-        if (this.type == "text") {
-            ctx.font = this.width + " " + this.height;
-            ctx.fillStyle = color;
-            ctx.fillText(this.text, this.x, this.y);
-        } else {
-            ctx.fillStyle = color;
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
-    }
-    this.newPos = function() {
-        this.gravitySpeed += this.gravity;
-        this.x += this.speedX;
-        this.y += this.speedY + this.gravitySpeed;
-        this.hitBottom();
-    }
-    this.hitBottom = function() {
-        var rockbottom = myGameArea.canvas.height - this.height;
-        if (this.y > rockbottom) {
-            this.y = rockbottom;
-            this.gravitySpeed = 0;
-        }
-    }
-    this.crashWith = function(otherobj) {
-        var myleft = this.x;
-        var myright = this.x + (this.width);
-        var mytop = this.y;
-        var mybottom = this.y + (this.height);
-        var otherleft = otherobj.x;
-        var otherright = otherobj.x + (otherobj.width);
-        var othertop = otherobj.y;
-        var otherbottom = otherobj.y + (otherobj.height);
-        var crash = true;
-        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
-            crash = false;
-        }
-        return crash;
-    }
-}
 
 function updateGameArea() { 
     myGameArea.clear();
 
+
+
     if(char1.health > 0 && char2.health > 0){
+    	ctx = myGameArea.context;
+
+    	time += 0.02;
+    	ctx.fillStyle = "black";
+    	var t = "Time: "+time.toFixed(2) + "s";
+    	ctx.fillText(t, 800,50);
     	char1.update();
     	char2.update();
-    }
     
-	if(bullets2.length){
+    
+		if(bullets2.length){
 		
-    	for(var j = 0; j < bullets2.length; j++){
+    		for(var j = 0; j < bullets2.length; j++){
     		
-    		bullets2[j].update();
+    			bullets2[j].update();
+    		}
     	}
-    }
-    if(bullets1.length){
+    	if(bullets1.length){
     	
-    	for(var i = 0; i < bullets1.length; i++){
-    		bullets1[i].update();
+    		for(var i = 0; i < bullets1.length; i++){
+    			bullets1[i].update();
+    		}
     	}
-    }
 
-    HP1.update();
-    HP2.update();
+   	 	HP1.update();
+    	HP2.update();
+	}
+	else{
+		ctx = myGameArea.context;
+		ctx.fillStyle = "black";
+		ctx.fillRect(0,0,myGameArea.canvas.width, myGameArea.canvas.height);
+		ctx.fillStyle = "white";
+		if(char1.health <= 0){
+			ctx.font = "35px Garamond";
+			ctx.fillText("GAME OVER. Player 2 Wins. Double tap finger to exit", 480, 300);
+		}
+		else{
+			ctx.font = "35px Garamond";
+			ctx.fillText("GAME OVER. Player 1 Wins. Double tap finger to exit", 480, 300);
+		}
+		gameover = true;
+		clearInterval(myGameArea.interval);
 
-    
+	}
+ 
 
 }
 
@@ -416,6 +403,7 @@ Myo.on('fingers_spread', function(){
 		char2.makeBullet();
 
 	}
+
 });
 
 Myo.on('double_tap', function(){
@@ -427,6 +415,9 @@ Myo.on('double_tap', function(){
 	else{
 		char2.makeBullet();
 
+	}
+	if(gameover){
+		window.location.replace('/');
 	}
 });
 

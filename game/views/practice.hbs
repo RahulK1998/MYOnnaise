@@ -1,0 +1,48 @@
+
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-image: url("/images/practicebg.jpg");
+    /*background-color: #3e3e3e;*/
+}
+</style>
+
+<body onload="start()">
+<script>
+Myo.connect('com.stolksdorf.myAwesomeApp');
+
+Myo.on('connected', function(){
+  Myo.setLockingPolicy('none');
+
+});
+
+function start(){
+	console.log("Starting now");
+	setTimeout(MenuScr.start(), 1000);
+}
+
+var MenuScr = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 1750;
+        this.canvas.height = 800;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        
+        
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+Myo.on('double_tap', function(){
+	window.location.replace('/');
+});
+
+
+
+
+</script>
+
+</body>
